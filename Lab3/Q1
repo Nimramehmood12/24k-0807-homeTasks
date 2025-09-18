@@ -1,0 +1,84 @@
+#include<iostream>
+#include<string>
+using namespace std;
+
+class Node{
+public:
+    string name;
+    int price;
+    Node *next;
+    Node(string i,int p):name(i),price(p),next(NULL){}
+};
+
+class Shopping{
+public:
+    Node* head;
+    Shopping(){
+        head=NULL;
+    }
+
+    void addFront(string item,int price){
+        Node *n=new Node(item,price);
+        n->next=head;
+        head=n;
+    }
+
+    void addEnd(string item,int price){
+        Node *n=new Node(item,price);
+        if(!head){
+            head=n;
+            return;
+        }
+        Node *temp=head;
+        while(temp->next){
+            temp=temp->next;
+        }
+        temp->next=n;
+    }
+    void insertAfter(string t,string item,int price){
+        Node *temp=head;
+        while(temp){
+            if(temp->name==t){
+                Node *n=new Node(item,price);
+                n->next=temp->next;
+                temp->next=n;
+                return;
+            }
+            temp=temp->next;
+        }
+    }
+ void searchItem(string name) {
+        Node* temp = head;
+        while (temp) {
+            if (temp->name == name) {
+                cout << name << " found, Price = $" << temp->price << endl;
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << name << " not found.\n";
+    }
+
+    void display() {
+        Node* temp = head;
+        cout << "Cart Items:\n";
+        while (temp) {
+            cout << temp->name << " - $" << temp->price << endl;
+            temp = temp->next;
+        }
+    }
+};
+
+int main() {
+    Shopping cart;
+    cart.addEnd("Laptop", 1000);
+    cart.addEnd("Phone", 700);
+    cart.addEnd("Tablet", 400);
+    cart.addEnd("Headphones", 150);
+
+    cart.addFront("Smartwatch", 200);
+    cart.addEnd("Keyboard", 80);
+    cart.insertAfter("Phone", "Monitor", 300);
+    cart.searchItem("Tablet");
+    cart.display();
+}

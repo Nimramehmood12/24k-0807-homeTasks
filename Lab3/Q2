@@ -1,0 +1,106 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node {
+public:
+    string item;
+    int price;
+    Node* next;
+    Node(string i, int p) : item(i), price(p), next(NULL) {}
+};
+
+class CartSystem {
+private:
+    Node* head;
+
+public:
+    CartSystem() { head = NULL; }
+
+    void addTail(string item, int price) {
+        Node* n = new Node(item, price);
+        if (!head) { head = n; return; }
+        Node* temp = head;
+        while (temp->next) temp = temp->next;
+        temp->next = n;
+    }
+
+    void deleteFront() {
+        if (!head) {
+            cout << "Cart is empty. Nothing to delete.\n";
+            return;
+        }
+        Node* temp = head;
+        head = head->next;
+        cout << "Deleted: " << temp->item << " - $" << temp->price << endl;
+        delete temp;
+    }
+
+    void searchByName(string name) {
+        Node* temp = head;
+        while (temp) {
+            if (temp->item == name) {
+                cout << "Found: " << temp->item << " - $" << temp->price << endl;
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << name << " not found in the cart.\n";
+    }
+
+    void searchByPosition(int pos) {
+        if (pos <= 0) {
+            cout << "Invalid position.\n";
+            return;
+        }
+        Node* temp = head;
+        int count = 1;
+        while (temp) {
+            if (count == pos) {
+                cout << "At position " << pos << ": " << temp->item << " - $" << temp->price << endl;
+                return;
+            }
+            temp = temp->next;
+            count++;
+        }
+        cout << "Position " << pos << " is out of range.\n";
+    }
+
+    void display() {
+        if (!head) {
+            cout << "Cart is empty.\n";
+            return;
+        }
+        Node* temp = head;
+        cout << "\n--- Shopping Cart ---\n";
+        while (temp) {
+            cout << temp->item << " - $" << temp->price << endl;
+            temp = temp->next;
+        }
+        cout << "----------------------\n";
+    }
+};
+
+int main() {
+    CartSystem cart;
+    cart.addTail("Laptop", 1000);
+    cart.addTail("Phone", 700);
+    cart.addTail("Tablet", 400);
+
+    cout << "Initial Cart:\n";
+    cart.display();
+
+    cart.searchByName("Phone");
+    cart.searchByName("Headphones");
+
+    cart.searchByPosition(2);
+    cart.searchByPosition(5);
+
+    cart.deleteFront();
+    cart.display();
+
+    cart.addTail("Keyboard", 80);
+    cart.display();
+
+    return 0;
+}

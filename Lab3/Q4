@@ -1,0 +1,166 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node {
+public:
+    int ticketID;
+    string customerName;
+    string rideName;
+    Node* next;
+
+    Node(int id, string cname, string rname) {
+        ticketID = id;
+        customerName = cname;
+        rideName = rname;
+        next = NULL;
+    }
+};
+
+class CircularBooking {
+private:
+    Node* tail;
+
+public:
+    CircularBooking() { tail = NULL; }
+
+    void issueEnd(int id, string cname, string rname) {
+        Node* n = new Node(id, cname, rname);
+        if (!tail) {
+            tail = n;
+            tail->next = tail;
+            return;
+        }
+        n->next = tail->next;
+        tail->next = n;
+        tail = n;
+    }
+
+    void issueFront(int id, string cname, string rname) {
+        Node* n = new Node(id, cname, rname);
+        if (!tail) {
+            tail = n;
+            tail->next = tail;
+            return;
+        }
+        n->next = tail->next;
+        tail->next = n;
+    }
+
+    void cancelByID(int id) {
+        if (!tail) {
+            cout << "No tickets.\n";
+            return;
+        }
+        Node* curr = tail->next;
+        Node* prev = tail;
+        do {
+            if (curr->ticketID == id) {
+                if (curr == tail && curr == tail->next) {
+                    delete curr;
+                    tail = NULL;
+                } else {
+                    prev->next = curr->next;
+                    if (curr == tail) tail = prev;
+                    delete curr;
+                }
+                cout << "Ticket " << id << " cancelled.\n";
+                return;
+            }
+            prev = curr;
+            curr = curr->next;
+        } while (curr != tail->next);
+        cout << "Ticket ID " << id << " not found.\n";
+    }
+
+    void cancelFirst() {
+        if (!tail) {
+            cout << "No tickets.\n";
+            return;
+        }
+        Node* first = tail->next;
+        if (tail == first) {
+            cout << "Cancelled: " << first->ticketID << endl;
+            delete first;
+            tail = NULL;
+        } else {
+            tail->next = first->next;
+            cout << "Cancelled: " << first->ticketID << endl;
+            delete first;
+        }
+    }
+
+    void searchByID(int id) {
+        if (!tail) { cout << "No tickets.\n"; return; }
+        Node* temp = tail->next;
+        do {
+            if (temp->ticketID == id) {
+                cout << "Ticket [" << temp->ticketID << "] "
+                     << temp->customerName << " - " << temp->rideName << endl;
+                return;
+            }
+            temp = temp->next;
+        } while (temp != tail->next);
+        cout << "Ticket ID " << id << " not found.\n";
+    }
+
+    void displayAll() {
+        if (!tail) { cout << "No tickets.\n"; return; }
+        cout << "\nTickets (Circular Order):\n";
+        Node* temp = tail->next;
+        do {
+            cout << "[" << temp->ticketID << "] "
+                 << temp->customerName << " - " << temp->rideName << endl;
+            temp = temp->next;
+        } while (temp != tail->next);
+    }
+
+    void countTickets() {
+        if (!tail) { cout << "Total Tickets: 0\n"; return; }
+        int count = 0;
+        Node* temp = tail->next;
+        do {
+            count++;
+            temp = temp->next;
+        } while (temp != tail->next);
+        cout << "Total Tickets: " << count << endl;
+    }
+
+    void nextAfterID(int id) {
+        if (!tail) { cout << "No tickets.\n"; return; }
+        Node* temp = tail->next;
+        do {
+            if (temp->ticketID == id) {
+                Node* nextNode = temp->next;
+                cout << "Next Ticket: [" << nextNode->ticketID << "] "
+                     << nextNode->customerName << " - " << nextNode->rideName << endl;
+                return;
+            }
+            temp = temp->next;
+        } while (temp != tail->next);
+        cout << "Ticket ID " << id << " not found.\n";
+    }
+};
+
+int main() {
+    CircularBooking booking;
+
+    booking.issueEnd(1, "Ali", "Roller Coaster");
+    booking.issueEnd(2, "Sara", "Ferris Wheel");
+    booking.issueEnd(3, "Omar", "Bumper Cars");
+    booking.issueFront(0, "VIP John", "Haunted House");
+
+    booking.displayAll();
+    booking.countTickets();
+
+    booking.searchByID(2);
+    booking.nextAfterID(2);
+
+    booking.cancelByID(3);
+    booking.cancelFirst();
+
+    booking.displayAll();
+    booking.countTickets();
+
+    return 0;
+}

@@ -1,0 +1,149 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Node {
+public:
+    int id;
+    string name;
+    int price;
+    Node* next;
+    Node* prev;
+
+    Node(int i, string n, int p) {
+        id = i;
+        name = n;
+        price = p;
+        next = prev = NULL;
+    }
+};
+
+class DoublyCart {
+private:
+    Node* head;
+    Node* tail;
+
+public:
+    DoublyCart() { head = tail = NULL; }
+
+    void insertEnd(int id, string name, int price) {
+        Node* n = new Node(id, name, price);
+        if (!head) { head = tail = n; return; }
+        tail->next = n;
+        n->prev = tail;
+        tail = n;
+    }
+
+    void insertFront(int id, string name, int price) {
+        Node* n = new Node(id, name, price);
+        if (!head) { head = tail = n; return; }
+        n->next = head;
+        head->prev = n;
+        head = n;
+    }
+
+    void removeFront() {
+        if (!head) { cout << "Cart is empty.\n"; return; }
+        Node* temp = head;
+        cout << "Removed: " << temp->name << endl;
+        if (head == tail) { head = tail = NULL; }
+        else { head = head->next; head->prev = NULL; }
+        delete temp;
+    }
+
+    void removeEnd() {
+        if (!tail) { cout << "Cart is empty.\n"; return; }
+        Node* temp = tail;
+        cout << "Removed: " << temp->name << endl;
+        if (head == tail) { head = tail = NULL; }
+        else { tail = tail->prev; tail->next = NULL; }
+        delete temp;
+    }
+
+    void searchByID(int id) {
+        Node* temp = head;
+        while (temp) {
+            if (temp->id == id) {
+                cout << "Found: [" << temp->id << "] " << temp->name << " - $" << temp->price << endl;
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << "Item with ID " << id << " not found.\n";
+    }
+
+    void updatePrice(int id, int newPrice) {
+        Node* temp = head;
+        while (temp) {
+            if (temp->id == id) {
+                temp->price = newPrice;
+                cout << "Updated price of " << temp->name << " to $" << newPrice << endl;
+                return;
+            }
+            temp = temp->next;
+        }
+        cout << "Item with ID " << id << " not found.\n";
+    }
+
+    void displayForward() {
+        if (!head) { cout << "Cart is empty.\n"; return; }
+        cout << "\nCart (Front to End):\n";
+        Node* temp = head;
+        while (temp) {
+            cout << "[" << temp->id << "] " << temp->name << " - $" << temp->price << endl;
+            temp = temp->next;
+        }
+    }
+
+    void displayBackward() {
+        if (!tail) { cout << "Cart is empty.\n"; return; }
+        cout << "\nCart (End to Front):\n";
+        Node* temp = tail;
+        while (temp) {
+            cout << "[" << temp->id << "] " << temp->name << " - $" << temp->price << endl;
+            temp = temp->prev;
+        }
+    }
+
+    void countItems() {
+        int count = 0;
+        Node* temp = head;
+        while (temp) { count++; temp = temp->next; }
+        cout << "Total items: " << count << endl;
+    }
+
+    void mostExpensive() {
+        if (!head) { cout << "Cart is empty.\n"; return; }
+        Node* temp = head;
+        Node* maxNode = head;
+        while (temp) {
+            if (temp->price > maxNode->price) maxNode = temp;
+            temp = temp->next;
+        }
+        cout << "Most Expensive: [" << maxNode->id << "] " << maxNode->name << " - $" << maxNode->price << endl;
+    }
+};
+
+int main() {
+    DoublyCart cart;
+
+    cart.insertEnd(101, "Laptop", 1000);
+    cart.insertEnd(102, "Phone", 700);
+    cart.insertEnd(103, "Tablet", 400);
+    cart.insertFront(100, "Charger", 50);
+
+    cart.displayForward();
+    cart.displayBackward();
+
+    cart.searchByID(102);
+    cart.updatePrice(103, 450);
+
+    cart.removeFront();
+    cart.removeEnd();
+
+    cart.displayForward();
+    cart.countItems();
+    cart.mostExpensive();
+
+    return 0;
+}

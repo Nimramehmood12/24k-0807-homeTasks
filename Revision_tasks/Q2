@@ -1,0 +1,44 @@
+// Reason: Shell Sort is faster than Bubble Sort because it moves elements across wider gaps
+// early on, reducing total swaps and comparisons. The airport prefers it for faster luggage sorting.
+
+#include<iostream>
+using namespace std;
+
+void printarr(int a[], int n){
+    for(int i=0; i<n; i++){
+        cout << a[i];
+        if(i < n-1) cout << ", ";
+    }
+    cout << endl;
+}
+
+void shellSort(int arr[], int n){
+    for(int gap = n/2; gap > 0; gap /= 2){
+        for(int i = gap; i < n; i++){
+            for(int j = i - gap; j >= 0; j -= gap){
+                if(arr[j + gap] > arr[j]){
+                    break;
+                } else {
+                    int temp = arr[j + gap];
+                    arr[j + gap] = arr[j];
+                    arr[j] = temp;
+                }
+            }
+        }
+        cout << "After gap " << gap << ": ";
+        printarr(arr, n);
+    }
+}
+
+int main(){
+    int arr[] = {32, 25, 40, 12, 18, 50, 28};
+    int n = sizeof(arr) / sizeof(arr[0]);
+
+    cout << "Initial: ";
+    printarr(arr, n);
+
+    shellSort(arr, n);
+
+    cout << "Final Sorted (lightest to heaviest): ";
+    printarr(arr, n);
+}

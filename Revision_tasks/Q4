@@ -1,0 +1,60 @@
+// (a) Backtracking is used to explore all possible safe paths (cells with 1) from the top-left corner
+//     to the bottom-right corner. The algorithm tries moving RIGHT and DOWN recursively, marking
+//     each step. If it hits a fire cell (0) or dead end, it backtracks and tries another route.
+//
+// (b) If no safe route exists, backtracking undoes the previous move using the line
+//     "sol[x][y] = 0;" — this line removes the cell from the current path and allows the
+//     algorithm to return false, indicating there is no valid escape path.
+
+#include <iostream>
+using namespace std;
+
+const int N = 4;
+int maze[N][N] = {
+    {1, 1, 0, 1},
+    {0, 1, 1, 0},
+    {1, 1, 0, 1},
+    {0, 1, 1, 1}
+};
+int sol[N][N] = {0};
+
+bool isSafe(int x, int y) {
+    return (x >= 0 && y >= 0 && x < N && y < N && maze[x][y] == 1);
+}
+
+bool escapeMaze(int x, int y) {
+    if (x == N - 1 && y == N - 1) { // reached exit
+        sol[x][y] = 1;
+        return true;
+    }
+
+    if (isSafe(x, y)) {
+        sol[x][y] = 1;
+
+        // Try moving Right
+        if (escapeMaze(x, y + 1))
+            return true;
+
+        // Try moving Down
+        if (escapeMaze(x + 1, y))
+            return true;
+
+        // Backtrack: undo move if both directions fail
+        sol[x][y] = 0;
+        return false;
+    }
+    return false;
+}
+
+int main() {
+    if (escapeMaze(0, 0)) {
+        cout << "Safe Escape Path Found:\n";
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++)
+                cout << sol[i][j] << " ";
+            cout << endl;
+        }
+    } else {
+        cout << "No safe escape path exists.\n";
+    }
+}

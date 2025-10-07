@@ -1,0 +1,44 @@
+#include<iostream>
+using namespace std;
+
+void printarr(int a[],int n){
+    for(int i=0;i<n;i++){
+        cout<<a[i]<<", ";
+    }
+    cout<<endl;
+}
+
+void shellSort(int arr[],int n){
+    for(int gap=n/2;gap>0;gap/=2){
+        for(int i=gap;i<n;i++){
+            for(int j=i-gap;j>=0;j-=gap){
+                if(arr[j+gap]>arr[j]){
+                    break;
+                }else{
+                    int temp=arr[j+gap];
+                    arr[j+gap]=arr[j];
+                    arr[j]=temp;
+                }
+            }
+    }
+} }
+
+
+int main(){
+    int arr[]={205, 102, 310, 450, 120,90};
+    int n=sizeof(arr)/sizeof(arr[0]);
+
+    cout<<"Initial: ";
+    printarr(arr,n);
+
+    shellSort(arr,n);
+    cout<<"Final: ";
+    printarr(arr,n);
+}
+
+/*Why Shell Sort is better here :
+Insertion sort is excellent when the array is almost sorted, because it moves elements one position at a time.
+But when a small element (like 90) sits near the end and must move to the front, insertion sort will shift many 
+elements one-by-one. Shell Sort uses a gap sequence to move elements long distances early (reducing many inversions), then 
+finishes with a final insertion pass. For the given IDs Shell moves 90 closer to the front in the first (gap)
+pass, so the final pass does much less work than plain insertion sort.*/

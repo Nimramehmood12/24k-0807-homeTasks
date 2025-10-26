@@ -1,0 +1,68 @@
+#include <iostream>
+using namespace std;
+
+struct Call {
+    string name;
+    string number;
+    int duration;
+};
+
+class CallHistory {
+    Call stack[10];
+    int top;
+
+public:
+    CallHistory() { top = -1; }
+
+    bool empty() { return top == -1; }
+    bool full() { return top == 9; }
+
+    void push(Call c) {
+        if (full()) {
+            cout << "Call history is full!\n";
+            return;
+        }
+        stack[++top] = c;
+        cout << "Call added: " << c.name << endl;
+        display();
+    }
+
+    void pop() {
+        if (empty()) {
+            cout << "No calls to remove!\n";
+            return;
+        }
+        cout << "Removed call: " << stack[top--].name << endl;
+        display();
+    }
+
+    void topCall() {
+        if (empty())
+            cout << "No recent call.\n";
+        else
+            cout << "Most recent call: " << stack[top].name
+                 << " (" << stack[top].number << ", " << stack[top].duration << " mins)\n";
+    }
+
+    void display() {
+        if (empty()) {
+            cout << "No call history.\n";
+            return;
+        }
+        cout << "\nCurrent Call Log:\n";
+        for (int i = top; i >= 0; i--)
+            cout << stack[i].name << " - " << stack[i].number
+                 << " (" << stack[i].duration << " mins)\n";
+        cout << endl;
+    }
+};
+
+int main() {
+    CallHistory ch;
+    ch.push({"Ali", "0300-1111111", 5});
+    ch.push({"Sara", "0301-2222222", 3});
+    ch.push({"Ahmed", "0302-3333333", 2});
+    ch.topCall();
+    ch.pop();
+    ch.topCall();
+}

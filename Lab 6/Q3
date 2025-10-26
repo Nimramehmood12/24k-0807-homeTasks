@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+
+struct Node {
+    string url;
+    Node* next;
+    Node(string u) { url = u; next = NULL; }
+};
+
+class Browser {
+    Node* head;
+    string stack[10];
+    int top;
+
+public:
+    Browser() { head = NULL; top = -1; }
+
+    void visit(string url) {
+        Node* newNode = new Node(url);
+        newNode->next = head;
+        head = newNode;
+        stack[++top] = url;
+        cout << "Visited: " << url << endl;
+    }
+
+    void goBack(int steps) {
+        cout << "\nGoing back " << steps << " times...\n";
+        for (int i = 0; i < steps && top >= 0; i++) {
+            cout << "Back from: " << stack[top--] << endl;
+            Node* temp = head;
+            head = head->next;
+            delete temp;
+        }
+        if (head != NULL)
+            cout << "Current page: " << head->url << endl;
+        else
+            cout << "No pages left.\n";
+    }
+
+    void showHistory() {
+        cout << "\nBrowsing History:\n";
+        Node* temp = head;
+        while (temp) {
+            cout << temp->url << endl;
+            temp = temp->next;
+        }
+    }
+};
+
+int main() {
+    Browser b;
+    b.visit("Google");
+    b.visit("Facebook");
+    b.visit("Twitter");
+    b.visit("LinkedIn");
+    b.visit("Instagram");
+    b.showHistory();
+
+    b.goBack(2); // back to Facebook
+}

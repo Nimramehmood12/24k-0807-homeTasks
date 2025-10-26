@@ -1,0 +1,60 @@
+#include <iostream>
+using namespace std;
+
+#define SIZE 10
+
+class LibraryQueue {
+    string patrons[SIZE];
+    int front, rear;
+
+public:
+    LibraryQueue() {
+        front = -1;
+        rear = -1;
+    }
+
+    bool isFull() { return rear == SIZE - 1; }
+    bool isEmpty() { return front == -1 || front > rear; }
+
+    void addPatron(string name) {
+        if (isFull()) {
+            cout << "Queue is full! Cannot add " << name << endl;
+            return;
+        }
+        if (front == -1) front = 0;
+        patrons[++rear] = name;
+        cout << name << " joined the queue.\n";
+        display();
+    }
+
+    void removePatron() {
+        if (isEmpty()) {
+            cout << "No patrons waiting.\n";
+            return;
+        }
+        cout << patrons[front++] << " completed their transaction.\n";
+        display();
+        if (front > rear) front = rear = -1;
+    }
+
+    void display() {
+        if (isEmpty()) {
+            cout << "No patrons currently waiting.\n";
+            return;
+        }
+        cout << "Current queue: ";
+        for (int i = front; i <= rear; i++)
+            cout << patrons[i] << " ";
+        cout << endl;
+    }
+};
+
+int main() {
+    LibraryQueue q;
+    q.addPatron("Ali");
+    q.addPatron("Sara");
+    q.addPatron("Ahmed");
+    q.removePatron();
+    q.display();
+    q.addPatron("Zara");
+}

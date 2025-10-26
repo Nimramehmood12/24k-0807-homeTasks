@@ -1,0 +1,22 @@
+Operations:
+
+enqueue(order) → Add new order to the rear
+
+dequeue() → Process (remove) the front order when ready
+
+isFull() → Check if queue has reached maximum capacity
+
+isEmpty() → Check if no orders are pending
+
+display() → Show all current orders
+
+To prevent overflow/underflow:
+
+Use a circular queue so that space is reused efficiently.
+
+Always check isFull() and isEmpty() before enqueue/dequeue.
+
+To print processed orders:
+
+Store processed orders in another list or log them as they’re dequeued,
+then print them in the same order they were received.

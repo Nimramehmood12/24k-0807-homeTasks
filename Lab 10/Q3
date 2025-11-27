@@ -1,0 +1,83 @@
+#include <iostream>
+#include <string>
+using namespace std;
+
+class Task {
+public:
+    string name;
+    int p;
+};
+
+void swap(Task &a, Task &b) {
+    Task t = a;
+    a = b;
+    b = t;
+}
+
+void heapifyUp(Task heap[], int i) {
+    while (i > 0 && heap[i].p > heap[(i - 1) / 2].p) {
+        swap(heap[i], heap[(i - 1) / 2]);
+        i = (i - 1) / 2;
+    }
+}
+
+void heapifyDown(Task heap[], int s, int i) {
+    int large = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
+
+    if (l < s && heap[l].p > heap[large].p) large = l;
+    if (r < s && heap[r].p > heap[large].p) large = r;
+
+    if (large != i) {
+        swap(heap[i], heap[large]);
+        heapifyDown(heap, s, large);
+    }
+}
+
+void insert(Task heap[], int &s, string name, int pri) {
+    heap[s].name = name;
+    heap[s].p = pri;
+    s++;
+    heapifyUp(heap, s - 1);
+}
+
+Task removeTask(Task heap[], int &size) {
+    if (size <= 0) return {"", -1};
+    Task root = heap[0];
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(heap, size, 0);
+    return root;
+}
+
+void displayHeap(Task heap[], int s) {
+    for (int i = 0; i < s; i++)
+        cout << heap[i].name << "(" << heap[i].p << ") ";
+    cout << endl;
+}
+
+int main() {
+    Task heap[20];
+    int size = 0;
+
+
+    insert(heap, size, "A", 5);
+    insert(heap, size, "B", 3);
+    insert(heap, size, "C", 8);
+
+    cout << "Heap after inserting A(5), B(3), C(8): ";
+    displayHeap(heap, size);
+
+
+    Task removed = removeTask(heap, size);
+    cout << "Removed highest priority task: " << removed.name << "(" << removed.p << ")" << endl;
+    cout << "Heap after removal: ";
+    displayHeap(heap, size);
+
+    insert(heap, size, "D", 6);
+    cout << "Heap after inserting D(6): ";
+    displayHeap(heap, size);
+
+    return 0;
+}

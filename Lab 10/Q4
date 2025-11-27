@@ -1,0 +1,84 @@
+#include <iostream>
+using namespace std;
+
+class Order {
+public:
+    int price;
+};
+
+void swapOrder(Order &a, Order &b) {
+    Order t = a;
+    a = b;
+    b = t;
+}
+
+void heapifyUp(Order heap[], int index) {
+    while (index > 0 && heap[index].price < heap[(index - 1) / 2].price) {
+        swapOrder(heap[index], heap[(index - 1) / 2]);
+        index = (index - 1) / 2;
+    }
+}
+
+void heapifyDown(Order heap[], int size, int index) {
+    int smallest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heap[left].price < heap[smallest].price)
+        smallest = left;
+
+    if (right < size && heap[right].price < heap[smallest].price)
+        smallest = right;
+
+    if (smallest != index) {
+        swapOrder(heap[index], heap[smallest]);
+        heapifyDown(heap, size, smallest);
+    }
+}
+
+void insertOrder(Order heap[], int &size, int price) {
+    heap[size].price = price;
+    size++;
+    heapifyUp(heap, size - 1);
+}
+
+Order removeOrder(Order heap[], int &size) {
+    if (size <= 0) return {-1};
+    Order root = heap[0];
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(heap, size, 0);
+    return root;
+}
+
+void displayHeap(Order heap[], int size) {
+    for (int i = 0; i < size; i++)
+        cout << heap[i].price << " ";
+    cout << endl;
+}
+
+int main() {
+    Order heap[20];
+    int size = 0;
+
+    insertOrder(heap, size, 100);
+    insertOrder(heap, size, 50);
+    insertOrder(heap, size, 75);
+    insertOrder(heap, size, 60);
+
+    cout << "Min-Heap after inserting orders 100, 50, 75, 60: ";
+    displayHeap(heap, size);
+
+    cout << "Inserting new order with price 55..." << endl;
+    insertOrder(heap, size, 55);
+    cout << "Heap after insertion: ";
+    displayHeap(heap, size);
+
+
+    Order executed = removeOrder(heap, size);
+    cout << "Executed order with price: " << executed.price << endl;
+    cout << "Heap after execution: ";
+    displayHeap(heap, size);
+
+    return 0;
+}

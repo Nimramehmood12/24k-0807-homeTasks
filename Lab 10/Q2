@@ -1,0 +1,82 @@
+#include <iostream>
+#include <climits>
+using namespace std;
+
+void swapVal(int &a, int &b) {
+    int t = a;
+    a = b;
+    b = t;
+}
+
+void heapifyUp(int heap[], int index) {
+    while (index > 0 && heap[index] > heap[(index - 1) / 2]) {
+        swapVal(heap[index], heap[(index - 1) / 2]);
+        index = (index - 1) / 2;
+    }
+}
+
+void heapifyDown(int heap[], int size, int index) {
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heap[left] > heap[largest])
+        largest = left;
+
+    if (right < size && heap[right] > heap[largest])
+        largest = right;
+
+    if (largest != index) {
+        swapVal(heap[index], heap[largest]);
+        heapifyDown(heap, size, largest);
+    }
+}
+
+void insertHeap(int heap[], int &size, int severity) {
+    heap[size] = severity;
+    size++;
+    heapifyUp(heap, size - 1);
+}
+
+int removeHeap(int heap[], int &size) {
+    if (size <= 0)
+        return INT_MIN;
+
+    int root = heap[0];
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(heap, size, 0);
+    return root;
+}
+
+void displayHeap(int heap[], int size) {
+    for (int i = 0; i < size; i++)
+        cout << heap[i] << " ";
+    cout << endl;
+}
+
+int main() {
+    int heap[20];
+    int size = 0;
+
+    insertHeap(heap, size, 20);
+    insertHeap(heap, size, 15);
+    insertHeap(heap, size, 8);
+    insertHeap(heap, size, 5);
+    insertHeap(heap, size, 10);
+
+    cout << "Initial Max-Heap (patient severities): ";
+    displayHeap(heap, size);
+
+    cout << "Inserting new patient with severity 10..." << endl;
+    insertHeap(heap, size, 10);
+    cout << "Heap after insertion: ";
+    displayHeap(heap, size);
+
+    cout << "Treating patient with highest severity: " << removeHeap(heap, size) << endl;
+    cout << "Heap after treatment: ";
+    displayHeap(heap, size);
+
+    return 0;
+}
+

@@ -1,0 +1,83 @@
+#include <iostream>
+using namespace std;
+
+class Player {
+public:
+    int rating;
+};
+
+void swapPlayer(Player &a, Player &b) {
+    Player t = a;
+    a = b;
+    b = t;
+}
+
+void heapifyUp(Player heap[], int index) {
+    while (index > 0 && heap[index].rating > heap[(index - 1) / 2].rating) {
+        swapPlayer(heap[index], heap[(index - 1) / 2]);
+        index = (index - 1) / 2;
+    }
+}
+
+void heapifyDown(Player heap[], int size, int index) {
+    int largest = index;
+    int left = 2 * index + 1;
+    int right = 2 * index + 2;
+
+    if (left < size && heap[left].rating > heap[largest].rating)
+        largest = left;
+
+    if (right < size && heap[right].rating > heap[largest].rating)
+        largest = right;
+
+    if (largest != index) {
+        swapPlayer(heap[index], heap[largest]);
+        heapifyDown(heap, size, largest);
+    }
+}
+
+void insertPlayer(Player heap[], int &size, int rating) {
+    heap[size].rating = rating;
+    size++;
+    heapifyUp(heap, size - 1);
+}
+
+Player removePlayer(Player heap[], int &size) {
+    if (size <= 0) return {-1};
+    Player root = heap[0];
+    heap[0] = heap[size - 1];
+    size--;
+    heapifyDown(heap, size, 0);
+    return root;
+}
+
+void displayQueue(Player heap[], int size) {
+    for (int i = 0; i < size; i++)
+        cout << heap[i].rating << " ";
+    cout << endl;
+}
+
+int main() {
+    Player heap[20];
+    int size = 0;
+
+    insertPlayer(heap, size, 1500);
+    insertPlayer(heap, size, 1200);
+    insertPlayer(heap, size, 1800);
+    insertPlayer(heap, size, 1600);
+
+    cout << "Initial Max-Heap (queue): ";
+    displayQueue(heap, size);
+
+    cout << "Inserting new player with rating 1700..." << endl;
+    insertPlayer(heap, size, 1700);
+    cout << "Heap after insertion: ";
+    displayQueue(heap, size);
+
+    Player matched = removePlayer(heap, size);
+    cout << "Matched player with rating: " << matched.rating << endl;
+    cout << "Queue after matching: ";
+    displayQueue(heap, size);
+
+    return 0;
+}
